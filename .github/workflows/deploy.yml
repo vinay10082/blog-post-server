@@ -53,6 +53,15 @@ jobs:
             # Create a stable symlink to the jar, explicitly excluding app.jar itself
             ln -sf $(ls *.jar | grep -v '\.original$' | grep -v 'app\.jar' | head -n 1) app.jar
             
+            # Create an EnvironmentFile with only non-empty secrets
+            > .env
+            [ -n "$SPRING_DATASOURCE_URL" ] && echo "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" >> .env
+            [ -n "$SPRING_DATASOURCE_USERNAME" ] && echo "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME" >> .env
+            [ -n "$SPRING_DATASOURCE_PASSWORD" ] && echo "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" >> .env
+            [ -n "${{ secrets.DB_SCHEMA }}" ] && echo "DB_SCHEMA=${{ secrets.DB_SCHEMA }}" >> .env
+            [ -n "$JWT_SECRET" ] && echo "JWT_SECRET=$JWT_SECRET" >> .env
+            [ -n "$ALLOWED_ORIGINS" ] && echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS" >> .env
+
             # Create systemd service dynamically
             sudo bash -c "cat > /etc/systemd/system/blog-post-server.service << 'EOF'
             [Unit]
@@ -62,12 +71,7 @@ jobs:
             [Service]
             User=ec2-user
             WorkingDirectory=/home/ec2-user/deploy/blog-post-server
-            Environment=\"SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL\"
-            Environment=\"SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME\"
-            Environment=\"SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD\"
-            Environment=\"DB_SCHEMA=${{ secrets.DB_SCHEMA }}\"
-            Environment=\"JWT_SECRET=$JWT_SECRET\"
-            Environment=\"ALLOWED_ORIGINS=$ALLOWED_ORIGINS\"
+            EnvironmentFile=/home/ec2-user/deploy/blog-post-server/.env
             ExecStart=/usr/bin/java -jar /home/ec2-user/deploy/blog-post-server/app.jar
             Restart=always
             SuccessExitStatus=143
