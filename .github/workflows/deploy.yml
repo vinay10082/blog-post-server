@@ -50,8 +50,8 @@ jobs:
           envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA,JWT_SECRET,ALLOWED_ORIGINS
           script: |
             cd ~/deploy/blog-post-server
-            # Create a stable symlink to the jar
-            ln -sf $(ls *.jar | grep -v '\.original$' | head -n 1) app.jar
+            # Create a stable symlink to the jar, explicitly excluding app.jar itself
+            ln -sf $(ls *.jar | grep -v '\.original$' | grep -v 'app\.jar' | head -n 1) app.jar
             
             # Create systemd service dynamically
             sudo bash -c "cat > /etc/systemd/system/blog-post-server.service << 'EOF'
