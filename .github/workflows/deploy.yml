@@ -42,16 +42,18 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA,JWT_SECRET
+          envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA,JWT_SECRET,ALLOWED_ORIGINS
           script: |
             pkill -f 'post-server.*\.jar' || true
             cd ~/deploy/blog-post-server
             export DB_SCHEMA="${{ secrets.DB_SCHEMA }}"
             export JWT_SECRET="$JWT_SECRET"
+            export ALLOWED_ORIGINS="$ALLOWED_ORIGINS"
             nohup java -jar $(ls *.jar | head -n 1) \
               --spring.datasource.url="$SPRING_DATASOURCE_URL" \
               --spring.datasource.username="$SPRING_DATASOURCE_USERNAME" \
