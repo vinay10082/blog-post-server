@@ -30,8 +30,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully");
+        try {
+            userRepository.save(user);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            return ResponseEntity.badRequest().body("Username or email already exists");
+        }
     }
 
     @PostMapping("/login")
