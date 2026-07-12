@@ -19,7 +19,7 @@ public class JwtUtil {
 
     private SecretKey key;
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
