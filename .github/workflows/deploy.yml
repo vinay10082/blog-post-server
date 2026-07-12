@@ -49,7 +49,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA,JWT_SECRET,ALLOWED_ORIGINS
           script: |
-            pkill -f 'post-server.*\.jar' || true
+            pkill -f '[p]ost-server.*\.jar' || true
             cd ~/deploy/blog-post-server
             export DB_SCHEMA="${{ secrets.DB_SCHEMA }}"
             export JWT_SECRET="$JWT_SECRET"
