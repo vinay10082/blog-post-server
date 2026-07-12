@@ -5,7 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <includeAll path="db/changelog/release100/ddl/" />
-    <includeAll path="db/changelog/release100/dml/" />
+    <include file="db/changelog/release100/ddl/001_init.sql" />
+    <include file="db/changelog/release100/ddl/002_auth.sql" />
+    <include file="db/changelog/release100/dml/001_seed.sql" />
 
 </databaseChangeLog>

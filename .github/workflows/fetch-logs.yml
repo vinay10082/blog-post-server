@@ -1,0 +1,22 @@
+name: Fetch EC2 Logs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Systemd Logs
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "==== SYSTEMD STATUS ===="
+            sudo systemctl status blog-post-server -l || true
+            echo "==== JOURNALCTL LOGS ===="
+            sudo journalctl -u blog-post-server -n 200 --no-pager || true
+            echo "==== LS DEPLOY DIR ===="
+            ls -la ~/deploy/blog-post-server
