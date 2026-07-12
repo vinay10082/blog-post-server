@@ -47,7 +47,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA
           script: |
-            pkill -f 'post-server.*\.jar' || true
+            pkill -f '[p]ost-server.*\.jar' || true
             cd ~/deploy/blog-post-server
             nohup java -jar $(ls *.jar | head -n 1) \
               --spring.datasource.url="$SPRING_DATASOURCE_URL" \
