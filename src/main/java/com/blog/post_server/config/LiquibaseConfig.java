@@ -12,15 +12,11 @@ public class LiquibaseConfig {
     @Value("${spring.liquibase.change-log:classpath:db/changelog/db.changelog-master.xml}")
     private String changeLog;
 
-    @Value("${spring.liquibase.default-schema:core}")
-    private String defaultSchema;
-
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(changeLog);
-        liquibase.setDefaultSchema(defaultSchema);
         return liquibase;
     }
 }

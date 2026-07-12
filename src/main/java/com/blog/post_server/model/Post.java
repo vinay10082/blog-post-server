@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "sample_post")
+@Table(name = "sample_post", schema = "core")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
