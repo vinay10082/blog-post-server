@@ -48,6 +48,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,DB_SCHEMA,JWT_SECRET,ALLOWED_ORIGINS
+          script: |
             cd ~/deploy/blog-post-server
             # Create a stable symlink to the jar
             ln -sf $(ls *.jar | grep -v '\.original$' | head -n 1) app.jar
