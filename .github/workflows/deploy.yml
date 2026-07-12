@@ -43,6 +43,7 @@ jobs:
           script: |
             pkill -f 'post-server.*\.jar' || true
             cd ~/deploy/blog-post-server
+            export DB_SCHEMA="${{ secrets.DB_SCHEMA }}"
             nohup java -jar $(ls *.jar | head -n 1) \
               --spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }} \
               --spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
