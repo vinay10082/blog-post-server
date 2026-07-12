@@ -14,9 +14,15 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    // For production, this should be an environment variable. Using a fixed key here for simplicity across Java and Go.
-    private static final String SECRET = "blog-secret-key-must-be-very-long-and-secure-at-least-256-bits";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    @org.springframework.beans.factory.annotation.Value("${JWT_SECRET:blog-secret-key-must-be-very-long-and-secure-at-least-256-bits}")
+    private String secret;
+
+    private SecretKey key;
+
+    @javax.annotation.PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
