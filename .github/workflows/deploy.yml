@@ -1,0 +1,50 @@
+name: Deploy Post Server (Java) to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '26'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: ./mvnw clean package -DskipTests
+
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "target/*.jar"
+          target: "~/deploy/blog-post-server"
+          strip_components: 1
+
+      - name: Restart Application on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            pkill -f 'post-server.*\.jar' || true
+            cd ~/deploy/blog-post-server
+            export DB_SCHEMA="${{ secrets.DB_SCHEMA }}"
+            nohup java -jar $(ls *.jar | head -n 1) \
+              --spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }} \
+              --spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
+              --spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }} > app.log 2>&1 &
