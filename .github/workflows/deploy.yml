@@ -47,4 +47,5 @@ jobs:
             nohup java -jar $(ls *.jar | head -n 1) \
               --spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }} \
               --spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
-              --spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }} > app.log 2>&1 &
+              --spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }} </dev/null > app.log 2>&1 &
+            sleep 5
